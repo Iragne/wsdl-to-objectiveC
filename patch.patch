@@ -1,0 +1,78 @@
+Index: Classes/USParser.h
+===================================================================
+--- Classes/USParser.h	(révision 225)
++++ Classes/USParser.h	(copie de travail)
+@@ -34,6 +34,7 @@
+ 
+ @interface USParser : NSObject {
+ 	NSURL *baseURL;
++    NSMutableSet    *imported;
+ }
+ 
+ - (id)initWithURL:(NSURL *)anURL;
+Index: Classes/USParser.m
+===================================================================
+--- Classes/USParser.m	(révision 225)
++++ Classes/USParser.m	(copie de travail)
+@@ -151,8 +151,16 @@
+         [document release];
+ 
+ 	} else {
++        
+ 		// not a schema import, let's see if it's a definitions import
+ 		NSString *definitionsLocation = [[el attributeForName:@"location"] stringValue];
++        if ([imported member:definitionsLocation]){
++            return;
++        }
++        if (!imported){
++            imported = [NSMutableSet new];
++        }
++        [imported addObject:definitionsLocation];
+ 		if (definitionsLocation == nil) return;
+ 		
+ 		NSURL *location = [NSURL URLWithString:definitionsLocation relativeToURL:baseURL];
+Index: WSDLParser.xcodeproj/project.pbxproj
+===================================================================
+--- WSDLParser.xcodeproj/project.pbxproj	(révision 225)
++++ WSDLParser.xcodeproj/project.pbxproj	(copie de travail)
+@@ -471,6 +471,9 @@
+ /* Begin PBXProject section */
+ 		08FB7793FE84155DC02AAC07 /* Project object */ = {
+ 			isa = PBXProject;
++			attributes = {
++				LastUpgradeCheck = 0510;
++			};
+ 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "WSDLParser" */;
+ 			compatibilityVersion = "Xcode 3.0";
+ 			developmentRegion = English;
+@@ -632,10 +635,10 @@
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
++				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+ 				COPY_PHASE_STRIP = NO;
+ 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+-				GCC_ENABLE_OBJC_GC = supported;
++				GCC_ENABLE_OBJC_GC = "";
+ 				GCC_MODEL_TUNING = G5;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+ 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+@@ -657,7 +660,7 @@
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
++				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+ 				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+ 				DEAD_CODE_STRIPPING = YES;
+ 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+@@ -664,7 +667,7 @@
+ 				DEPLOYMENT_LOCATION = YES;
+ 				DEPLOYMENT_POSTPROCESSING = YES;
+ 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+-				GCC_ENABLE_OBJC_GC = supported;
++				GCC_ENABLE_OBJC_GC = "";
+ 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+ 				GCC_MODEL_TUNING = G5;
+ 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
