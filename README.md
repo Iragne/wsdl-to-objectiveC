@@ -1,2 +1,2 @@
-wsdl-to-objectifC
+wsdl-to-objectiveC
 =================
