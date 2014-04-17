@@ -160,9 +160,8 @@
         if (!imported){
             imported = [NSMutableSet new];
         }
-        [imported addObject:definitionsLocation];
 		if (definitionsLocation == nil) return;
-		
+        [imported addObject:definitionsLocation];
 		NSURL *location = [NSURL URLWithString:definitionsLocation relativeToURL:baseURL];
 		
 		NSLog(@"Processing definitions import at location: %@", location);
